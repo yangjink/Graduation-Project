@@ -60,6 +60,11 @@ public class BaseView : MonoBehaviour
         if (label != null)
             label.effectColor = colorGray;//Color.gray;
     }
+    public void SetEnabled(GameObject btn, bool enable)
+    {
+        BoxCollider collider = btn.GetComponent<BoxCollider>();
+        if (null != collider) collider.enabled = enable;
+    }
     public void SetLabelToGray(UILabel label)
     {
         if (label != null)
@@ -109,9 +114,29 @@ public class BaseView : MonoBehaviour
             label.effectColor = recordedColor[btn];
         }
     }
+    public void SetButtonEnabled(GameObject m_btn)
+    {
+        BoxCollider collider = m_btn.GetComponent<BoxCollider>();
+        if (null != collider) collider.enabled = false;
+    }
     public void SetButtonEnabled(GameObject m_btn, bool enable = true)
     {
+        BoxCollider collider = m_btn.GetComponent<BoxCollider>();
+        if (null != collider) collider.enabled = enable;
 
+        UISprite sprite = m_btn.GetComponent<UISprite>();
+        if (null != sprite) sprite.ColorGrey = !enable;
+
+        UISprite[] sprite_childs = m_btn.GetComponentsInChildren<UISprite>();
+        if (null != sprite_childs && sprite_childs.Length > 0)
+        {
+            foreach (var item in sprite_childs)
+                if (null != item)
+                    item.ColorGrey = !enable;
+        }
+
+        UIButton button = m_btn.GetComponent<UIButton>();
+        if (null != button) button.ColorGrey = !enable;
     }
     public void SetSliderEnabled(UISlider m_Slider, bool enable = true)
     {

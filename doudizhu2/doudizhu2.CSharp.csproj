@@ -228,8 +228,11 @@
     <Compile Include="Assets\Script\Card.cs" />
     <Compile Include="Assets\Script\CardData.cs" />
     <Compile Include="Assets\Script\CardRules.cs" />
+    <Compile Include="Assets\Script\GameManager.cs" />
     <Compile Include="Assets\Script\GlobeVar.cs" />
     <Compile Include="Assets\Script\UIButtonEvent.cs" />
+    <Compile Include="Assets\Script\UIManager.cs" />
+    <Compile Include="Assets\Script\UIPathData.cs" />
     <Compile Include="Assets\Script\UIPressEvent.cs" />
     <Compile Include="Assets\Script\UISlideEvent.cs" />
     <Compile Include="Assets\Script\manager.cs" />

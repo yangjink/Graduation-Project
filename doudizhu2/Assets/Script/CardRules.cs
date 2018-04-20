@@ -4,25 +4,40 @@ using UnityEngine;
 
 public class CardRules 
 {
-    static CardRules instance = null;
-
-
-    public static CardRules Instance
+    public  enum CardRelesType
     {
-        get 
-        {
-            if (null == instance)
-            {
-                instance = new CardRules();
-            }
-            return instance;
-        }
-    }
+        Invalid = -1,    //无效
 
-    public void ClearCardRulesData()
-    {
-        instance = null;
+        Single,//单
+        Double,//对子
+        Straight,//顺子
+        DoubleStraight,//双顺子
+        TripleStraight,//飞机
+        OnlyThree,//三个不带
+        ThreeAndOne,//三带一
+        ThreeAndTwo,//三带二
+        Boom,//炸弹
+        JokerBoom,//王炸
     }
+    //static CardRules instance = null;
+
+
+    //public static CardRules Instance
+    //{
+    //    get 
+    //    {
+    //        if (null == instance)
+    //        {
+    //            instance = new CardRules();
+    //        }
+    //        return instance;
+    //    }
+    //}
+
+    //public void ClearCardRulesData()
+    //{
+    //    instance = null;
+    //}
 
 
     /// <summary>
@@ -30,9 +45,9 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsSingle(Card[] cards)
+    public static bool IsSingle(List<CardData> cards)
     {
-        if (cards.Length == 1)
+        if (cards.Count == 1)
             return true;
         else
             return false;
@@ -43,11 +58,11 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsDouble(Card[] cards)
+    public static bool IsDouble(List<CardData> cards)
     {
-        if (cards.Length == 2)
+        if (cards.Count == 2)
         {
-            if (cards[0].GetCardNum() == cards[1].GetCardNum())
+            if (cards[0].m_num == cards[1].m_num)
                 return true;
         }
 
@@ -59,18 +74,18 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsStraight(Card[] cards)
+    public static bool IsStraight(List<CardData> cards)
     {
-        if (cards.Length < 5 || cards.Length > 12)
+        if (cards.Count < 5 || cards.Count > 12)
             return false;
-        for (int i = 0; i < cards.Length - 1; i++)
+        for (int i = 0; i < cards.Count - 1; i++)
         {
-            int w = cards[i].GetCardNum();
-            if (cards[i + 1].GetCardNum() - w != 1)
+            int w = cards[i].m_num;
+            if (cards[i + 1].m_num - w != 1)
                 return false;
 
             //不能超过A
-            if (w > Weight.One || cards[i + 1].GetCardNum() > Weight.One)
+            if (w > (int)Card.cardNum.ONE || cards[i + 1].m_num > (int)Card.cardNum.ONE)
                 return false;
         }
 
@@ -82,23 +97,23 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsDoubleStraight(Card[] cards)
+    public static bool IsDoubleStraight(List<CardData> cards)
     {
-        if (cards.Length < 6 || cards.Length % 2 != 0)
+        if (cards.Count < 6 || cards.Count % 2 != 0)
             return false;
 
-        for (int i = 0; i < cards.Length; i += 2)
+        for (int i = 0; i < cards.Count; i += 2)
         {
-            if (cards[i + 1].GetCardNum() != cards[i].GetCardNum())
+            if (cards[i + 1].m_num != cards[i].m_num)
                 return false;
 
-            if (i < cards.Length - 2)
+            if (i < cards.Count - 2)
             {
-                if (cards[i + 2].GetCardNum() - cards[i].GetCardNum() != 1)
+                if (cards[i + 2].m_num - cards[i].m_num != 1)
                     return false;
 
                 //不能超过A
-                if (cards[i].GetCardNum() > Weight.One || cards[i + 2].GetCardNum() > Weight.One)
+                if (cards[i].m_num > (int)Card.cardNum.ONE || cards[i + 2].m_num > (int)Card.cardNum.ONE)
                     return false;
             }
         }
@@ -111,27 +126,27 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsTripleStraight(Card[] cards)
+    public static bool IsTripleStraight(List<CardData> cards)
     {
-        if (cards.Length < 6 || cards.Length % 3 != 0)
+        if (cards.Count < 6 || cards.Count % 3 != 0)
             return false;
 
-        for (int i = 0; i < cards.Length; i += 3)
+        for (int i = 0; i < cards.Count; i += 3)
         {
-            if (cards[i + 1].GetCardNum() != cards[i].GetCardNum())
+            if (cards[i + 1].m_num != cards[i].m_num)
                 return false;
-            if (cards[i + 2].GetCardNum() != cards[i].GetCardNum())
+            if (cards[i + 2].m_num != cards[i].m_num)
                 return false;
-            if (cards[i + 1].GetCardNum() != cards[i + 2].GetCardNum())
+            if (cards[i + 1].m_num != cards[i + 2].m_num)
                 return false;
 
-            if (i < cards.Length - 3)
+            if (i < cards.Count - 3)
             {
-                if (cards[i + 3].GetCardNum() - cards[i].GetCardNum() != 1)
+                if (cards[i + 3].m_num - cards[i].m_num != 1)
                     return false;
 
                 //不能超过A
-                if (cards[i].GetCardNum() > Weight.One || cards[i + 3].GetCardNum() > Weight.One)
+                if (cards[i].m_num > (int)Card.cardNum.ONE || cards[i + 3].m_num > (int)Card.cardNum.ONE)
                     return false;
             }
         }
@@ -144,15 +159,15 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsOnlyThree(Card[] cards)
+    public static bool IsOnlyThree(List<CardData> cards)
     {
-        if (cards.Length % 3 != 0)
+        if (cards.Count % 3 != 0)
             return false;
-        if (cards[0].GetCardNum() != cards[1].GetCardNum())
+        if (cards[0].m_num != cards[1].m_num)
             return false;
-        if (cards[1].GetCardNum() != cards[2].GetCardNum())
+        if (cards[1].m_num != cards[2].m_num)
             return false;
-        if (cards[0].GetCardNum() != cards[2].GetCardNum())
+        if (cards[0].m_num != cards[2].m_num)
             return false;
 
         return true;
@@ -164,16 +179,16 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsThreeAndOne(Card[] cards)
+    public static bool IsThreeAndOne(List<CardData> cards)
     {
-        if (cards.Length != 4)
+        if (cards.Count != 4)
             return false;
 
-        if (cards[0].GetCardNum() == cards[1].GetCardNum() &&
-            cards[1].GetCardNum() == cards[2].GetCardNum())
+        if (cards[0].m_num == cards[1].m_num &&
+            cards[1].m_num == cards[2].m_num)
             return true;
-        else if (cards[1].GetCardNum() == cards[2].GetCardNum() &&
-            cards[2].GetCardNum() == cards[3].GetCardNum())
+        else if (cards[1].m_num == cards[2].m_num &&
+            cards[2].m_num == cards[3].m_num)
             return true;
         return false;
     }
@@ -183,22 +198,22 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsThreeAndTwo(Card[] cards)
+    public static bool IsThreeAndTwo(List<CardData> cards)
     {
-        if (cards.Length != 5)
+        if (cards.Count != 5)
             return false;
 
-        if (cards[0].GetCardNum() == cards[1].GetCardNum() &&
-            cards[1].GetCardNum() == cards[2].GetCardNum())
+        if (cards[0].m_num == cards[1].m_num &&
+            cards[1].m_num == cards[2].m_num)
         {
-            if (cards[3].GetCardNum() == cards[4].GetCardNum())
+            if (cards[3].m_num == cards[4].m_num)
                 return true;
         }
 
-        else if (cards[2].GetCardNum() == cards[3].GetCardNum() &&
-            cards[3].GetCardNum() == cards[4].GetCardNum())
+        else if (cards[2].m_num == cards[3].m_num &&
+            cards[3].m_num == cards[4].m_num)
         {
-            if (cards[0].GetCardNum() == cards[1].GetCardNum())
+            if (cards[0].m_num == cards[1].m_num)
                 return true;
         }
 
@@ -210,16 +225,16 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsBoom(Card[] cards)
+    public static bool IsBoom(List<CardData> cards)
     {
-        if (cards.Length != 4)
+        if (cards.Count != 4)
             return false;
 
-        if (cards[0].GetCardNum() != cards[1].GetCardNum())
+        if (cards[0].m_num != cards[1].m_num)
             return false;
-        if (cards[1].GetCardNum() != cards[2].GetCardNum())
+        if (cards[1].m_num != cards[2].m_num)
             return false;
-        if (cards[2].GetCardNum() != cards[3].GetCardNum())
+        if (cards[2].m_num != cards[3].m_num)
             return false;
 
         return true;
@@ -231,19 +246,19 @@ public class CardRules
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool IsJokerBoom(Card[] cards)
+    public static bool IsJokerBoom(List<CardData> cards)
     {
-        if (cards.Length != 2)
+        if (cards.Count != 2)
             return false;
-        if (cards[0].GetCardNum() == Weight.SJoker)
+        if (cards[0].m_num == (int)Card.cardNum.XiaoWang)
         {
-            if (cards[1].GetCardNum() == Weight.LJoker)
+            if (cards[1].m_num == (int)Card.cardNum.DaWang)
                 return true;
             return false;
         }
-        else if (cards[0].GetCardNum() == Weight.LJoker)
+        else if (cards[0].m_num == (int)Card.cardNum.DaWang)
         {
-            if (cards[1].GetCardNum() == Weight.SJoker)
+            if (cards[1].m_num == (int)Card.cardNum.XiaoWang)
                 return true;
             return false;
         }
@@ -257,45 +272,45 @@ public class CardRules
     /// <param name="cards"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static bool PopEnable(Card[] cards, out CardsType type)
+    public static bool PopEnable(List<CardData> cards, out CardRelesType type)
     {
-        type = CardsType.None;
+        type = CardRelesType.Invalid;
         bool isRule = false;
-        switch (cards.Length)
+        switch (cards.Count)
         {
             case 1:
                 isRule = true;
-                type = CardsType.Single;
+                type = CardRelesType.Single;
                 break;
             case 2:
                 if (IsDouble(cards))
                 {
                     isRule = true;
-                    type = CardsType.Double;
+                    type = CardRelesType.Double;
                 }
                 else if (IsJokerBoom(cards))
                 {
                     isRule = true;
-                    type = CardsType.JokerBoom;
+                    type = CardRelesType.JokerBoom;
                 }
                 break;
             case 3:
                 if (IsOnlyThree(cards))
                 {
                     isRule = true;
-                    type = CardsType.OnlyThree;
+                    type = CardRelesType.OnlyThree;
                 }
                 break;
             case 4:
                 if (IsBoom(cards))
                 {
                     isRule = true;
-                    type = CardsType.Boom;
+                    type = CardRelesType.Boom;
                 }
                 else if (IsThreeAndOne(cards))
                 {
                     isRule = true;
-                    type = CardsType.ThreeAndOne;
+                    type = CardRelesType.ThreeAndOne;
                 }
 
                 break;
@@ -303,48 +318,48 @@ public class CardRules
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 else if (IsThreeAndTwo(cards))
                 {
                     isRule = true;
-                    type = CardsType.ThreeAndTwo;
+                    type = CardRelesType.ThreeAndTwo;
                 }
                 break;
             case 6:
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 else if (IsTripleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.TripleStraight;
+                    type = CardRelesType.TripleStraight;
                 }
                 else if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 break;
             case 7:
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 break;
             case 8:
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 else if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 //else if (IsTripleStraightAndSingle(cards))
                 //{
@@ -356,24 +371,24 @@ public class CardRules
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 else if (IsOnlyThree(cards))
                 {
                     isRule = true;
-                    type = CardsType.OnlyThree;
+                    type = CardRelesType.OnlyThree;
                 }
                 break;
             case 10:
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 else if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 //else if (IsTripleStraightAndDouble(cards))
                 //{
@@ -386,19 +401,19 @@ public class CardRules
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 break;
             case 12:
                 if (IsStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.Straight;
+                    type = CardRelesType.Straight;
                 }
                 else if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 //else if (IsTripleStraightAndSingle(cards))
                 //{
@@ -408,7 +423,7 @@ public class CardRules
                 else if (IsOnlyThree(cards))
                 {
                     isRule = true;
-                    type = CardsType.OnlyThree;
+                    type = CardRelesType.OnlyThree;
                 }
                 break;
             case 13:
@@ -417,14 +432,14 @@ public class CardRules
                 if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 break;
             case 15:
                 if (IsOnlyThree(cards))
                 {
                     isRule = true;
-                    type = CardsType.OnlyThree;
+                    type = CardRelesType.OnlyThree;
                 }
                 //else if (IsTripleStraightAndDouble(cards))
                 //{
@@ -436,7 +451,7 @@ public class CardRules
                 if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 //else if (IsTripleStraightAndSingle(cards))
                 //{
@@ -450,12 +465,12 @@ public class CardRules
                 if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 else if (IsOnlyThree(cards))
                 {
                     isRule = true;
-                    type = CardsType.OnlyThree;
+                    type = CardRelesType.OnlyThree;
                 }
                 break;
             case 19:
@@ -465,7 +480,7 @@ public class CardRules
                 if (IsDoubleStraight(cards))
                 {
                     isRule = true;
-                    type = CardsType.DoubleStraight;
+                    type = CardRelesType.DoubleStraight;
                 }
                 break;
             default:

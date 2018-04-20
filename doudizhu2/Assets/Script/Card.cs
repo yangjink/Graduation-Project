@@ -17,21 +17,21 @@ public class Card : MonoBehaviour {
     }
     public enum cardNum
     {
-        ONE,
-        TWO,
-        THREE,
-        FOUR,
-        FIVE,
-        SIX,
-        SEVEN,
-        EIGHT,
-        NINE,
-        TEN,
-        ELEVEN,
-        TWELVE,
-        THIRTEEN,
-        FOURTEEN,
-        FIFTEEN,
+        THREE = 1,
+        FOUR = 2,
+        FIVE = 3,
+        SIX = 4,
+        SEVEN = 5,
+        EIGHT = 6,
+        NINE = 7,
+        TEN = 8,
+        J = 9,
+        Q = 10,
+        K = 11,
+        ONE = 12,
+        TWO = 13,
+        XiaoWang = 14,
+        DaWang = 15,
     }
 
     /*

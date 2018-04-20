@@ -319,4 +319,19 @@ public class UIButtonColor : UIWidgetContainer
 			}
 		}
 	}
+
+    //add by us
+    public virtual bool ColorGrey
+    {
+        get
+        {
+            return (defaultColor.r < 0.01f);
+        }
+        set
+        {
+            Color tColor = defaultColor;
+            tColor.r = value ? 0f : 1f;
+            defaultColor = tColor;
+        }
+    }
 }

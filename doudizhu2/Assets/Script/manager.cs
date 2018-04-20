@@ -22,7 +22,13 @@ public class manager : BaseView {
     public Card[] m_wang = new Card[4];//王或者两张普通牌
     public Card[] m_landlordCard = new Card[5];//坑里牌
     private AudioSource audioBuchu;
+
+
+    public GameObject m_playHandItem;
+    public GameObject m_playHandWangItem;
     //private Random rd = new Random();
+
+    public CardRules.CardRelesType m_cardRelesType = CardRules.CardRelesType.Single;//出牌的类型
     void Awake()
     {
         EventDelegate.Add(m_Buchu.onClick, NoPlayHand);
@@ -33,9 +39,13 @@ public class manager : BaseView {
         {
             AddButtonEvent(m_cardArr[i].gameObject,OnClickCard,i);
         }
-        for (int i = 0; i < m_wang.Length; i++)
+        for (int i = 0; i < m_wang.Length-2; i++)
         {
             AddButtonEvent(m_wang[i].gameObject, OnClickCard, i);
+        }
+        for (int i = 2; i < m_wang.Length; i++)
+        {
+            AddButtonEvent(m_wang[i].gameObject, OnClickCard, i-2);
         }
         initCard();
         AddButtonEvent(m_Fapai, OnClickFaPai);
@@ -135,16 +145,18 @@ public class manager : BaseView {
         _playCardArr.Clear();
         m_playCard.Clear();
         int len = m_cardArr.Length-1;
-        int lenWang = 0;
+
+        bool isSelectCard = false;
         for (int i = 0; i < _player1.Count;i++ )
         {
             if (m_cardArr[i].GetIsSelect())
             {
                 //CD = _player1[i];
+                isSelectCard = true;
                 m_playCard.Add(_player1[i]);
                 //OnClickCard(m_cardArr[i].gameObject, i);
                 m_cardArr[i].SetIsSelect(false);
-                if (m_cardArr[i].GetCardNum() > 13)
+                if (m_cardArr[i].GetCardNum() >= (int)Card.cardNum.XiaoWang)
                 {
                     _playCardArr.Add(m_wang[(m_cardArr.Length-1)-(len--)]);//需要王上去
                 }
@@ -154,12 +166,20 @@ public class manager : BaseView {
                 }
             }
         }
-        for (int i = 0; i < m_playCard.Count;i++ )
+        m_playCard.Reverse();
+        if (CardRules.PopEnable(m_playCard, out m_cardRelesType) && isSelectCard)
         {
-            _player1.Remove(m_playCard[i]);
+            for (int i = 0; i < m_playCard.Count; i++)
+            {
+                _player1.Remove(m_playCard[i]);
+            }
+            PlayHandShow(_player1);
+            MoveCardPosition(_playCardArr);
         }
-        PlayHandShow(_player1);
-        MoveCardPosition(_playCardArr);
+        else
+        {
+            PlayHandShow(_player1);
+        }
     }
     void MoveCardPosition(List<Card> card)
     {
@@ -173,10 +193,11 @@ public class manager : BaseView {
             card[i].gameObject.SetActive(true);
             len -= 0.11f;
         }
+
     }
     void PlayHandShow(List<CardData> cardList)
     {
-        for (int i = 0; i < m_cardArr.Length;i++ )
+        for (int i = 0; i < m_cardArr.Length; i++)
         {
             m_cardArr[i].gameObject.SetActive(false);
         }
@@ -330,9 +351,9 @@ public class manager : BaseView {
 
     void ShowPlayerCard(List<CardData> player)
     {
-        for (int i = 0; i < 2 && i < player.Count;i++ )
+        for (int i = 0 ; i < 2 && i < player.Count;i++)
         {
-            if (player[i].m_num >= 14)
+            if (player[i].m_num >= (int)Card.cardNum.XiaoWang)
             {
                 m_cardArr[i] = m_wang[i];
             }

@@ -1,0 +1,21 @@
+    public Card[] m_cardArr = new Card[20];//当前的20个对象
+	private List<CardData> _player1 = new List<CardData>();//三个玩家的牌
+    private List<CardData> _player2 = new List<CardData>();
+    private List<CardData> _player3 = new List<CardData>();
+
+    private CardData[] _card = new CardData[54];//存放总牌
+	红色
+	1 2 3 4 5 6 7 8  9 10 11 12 13   14         15
+	3 4 5 6 7 8 9 10 J  Q  K  A  2  xiaowang    dawang 
+	
+	牌色
+	梅花 方块 黑桃 红桃
+	
+	现在向左靠骑，左边两张牌如果是王的话就替换对象为王的perfab
+	
+	发牌：先随机抽3张牌出来，再与末尾三张牌交换位置，然后从51张中随机0-2决定分给谁
+	
+	洗牌：就是重新拿一个新数组出来；
+	
+	出牌：读取当前的是isSelect状态的牌m_playCard，然后重新设置一遍牌；
+		然后再从后边移动cardprofab到屏幕中间，设置y值上移1.0f，x值差1.1f，根据数量计算需要的值再从左往右排；

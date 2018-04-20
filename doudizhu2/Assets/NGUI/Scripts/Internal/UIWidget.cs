@@ -285,6 +285,20 @@ public class UIWidget : UIRect
 		}
 	}
 
+    //add by us
+    public virtual bool ColorGrey
+    {
+        get
+        {
+            return (color.r < 0.01f);
+        }
+        set
+        {
+            Color tColor = color;
+            tColor.r = value ? 0f : 1f;
+            color = tColor;
+        }
+    }
 	/// <summary>
 	/// Color used by the widget.
 	/// </summary>
